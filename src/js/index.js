@@ -27,7 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const datos = await initializeProductos();
 
     if (!datos || !datos.productos) {
-        console.error('No se pudieron cargar los productos.');
+        muestraLoader(seccionCarrito, false);
+        const message = 'No se pudieron cargar los productos. Consulte a un administrador. Disculpe las molestias.';
+        seccionCarrito.textContent = message;
         return;
     }
 
