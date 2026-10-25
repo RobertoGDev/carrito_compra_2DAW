@@ -1,4 +1,5 @@
 import Carrito from './Carrito.js';
+import { muestraLoader, updateTablaTotal, updateTablaCantidad } from './utils.js';
 const URLAPI = './assets/api.json';
 
 let carrito;
@@ -21,43 +22,12 @@ const initializeProductos = async () => {
     }
 };
 
-const redondear = (num, carrito) => Math.round(num * 100) / 100 + ` ${carrito.currency}`;
 
-const muestraLoader = (mostrar) => {
-    let loader = document.getElementById('loader');
-    if (!loader) {
-        loader = document.createElement('div');
-        loader.id = 'loader';
-        loader.textContent = 'Obteniendo los datos de su compra, espere por favor...';
-        seccionCarrito.appendChild(loader);
-    }
-    loader.style.display = mostrar ? 'block' : 'none';
-};
-
-const updateTablaTotal = (carrito) => {
-    if (!carrito) return;
-    listaProductos.innerHTML = '';
-    carrito.productos.forEach((producto) => {
-        if (producto.cantidad > 0) {
-            const li = document.createElement('li');
-            li.textContent = `${producto.title} x ${producto.cantidad}`;
-            listaProductos.appendChild(li);
-        }
-    });
-    const total = carrito.getTotal();
-    amountElement.textContent = redondear(total, carrito);
-};
-
-const updateTablaCantidad = (SKU, cantidad, carrito) => {
-    const cantidadElemento = document.querySelector(`#producto-${SKU} span`);
-    const producto = carrito.getProducto(SKU);
-    document.getElementById(`total-${producto.SKU}`).textContent = redondear(producto.price * cantidad, carrito);
-    cantidadElemento.textContent = `${cantidad}`;
-};
 
 document.addEventListener('DOMContentLoaded', async () => {
 
-    muestraLoader(true);
+
+    muestraLoader(seccionCarrito, true);
 
     const datos = await initializeProductos();
 
@@ -67,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (datos) {
-        muestraLoader(false);
+        muestraLoader(seccionCarrito, false);
     }
 
     carrito = new Carrito(datos.productos, datos.currency);
@@ -95,16 +65,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             carrito.setCantidad(producto.SKU, producto.cantidad + 1);
             const cantidadActualizada = carrito.productos.find((p) => p.SKU === producto.SKU).cantidad;
             updateTablaCantidad(producto.SKU, cantidadActualizada, carrito);
-            updateTablaTotal(carrito);
+            updateTablaTotal(carrito, listaProductos, amountElement);
         };
 
         botonMenos.onclick = () => {
             carrito.setCantidad(producto.SKU, producto.cantidad > 0 ? producto.cantidad - 1 : 0);
             const cantidadActualizada = carrito.productos.find((p) => p.SKU === producto.SKU).cantidad;
             updateTablaCantidad(producto.SKU, cantidadActualizada, carrito);
-            updateTablaTotal(carrito);
+            updateTablaTotal(carrito, listaProductos, amountElement);
         };
     });
 
-    updateTablaTotal(carrito);
+    updateTablaTotal(carrito, listaProductos, amountElement);
 });
