@@ -11,6 +11,14 @@ const muestraLoader = (seccionCarrito, mostrar) => {
     loader.style.display = mostrar ? 'block' : 'none';
 };
 
+const actualizarCantidad = (carrito, listaProductos, producto, unidades, amountElement) => {
+    const nuevaCantidad = Math.max(0, producto.cantidad + unidades);
+    carrito.setCantidad(producto.SKU, nuevaCantidad);
+    const cantidadActualizada = carrito.getProducto(producto.SKU).cantidad;
+    updateTablaCantidad(producto.SKU, cantidadActualizada, carrito);
+    updateTablaTotal(carrito, listaProductos, amountElement);
+};
+
 const updateTablaTotal = (carrito, listaProductos, amountElement) => {
     if (!carrito) return;
     const resumen = carrito.getResumenProductos();
@@ -30,4 +38,4 @@ const updateTablaCantidad = (SKU, cantidad, carrito) => {
     cantidadElemento.textContent = `${cantidad}`;
 };
 
-export { redondear, muestraLoader, updateTablaTotal, updateTablaCantidad };
+export { redondear, muestraLoader, updateTablaTotal, actualizarCantidad };

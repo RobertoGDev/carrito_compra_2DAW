@@ -1,5 +1,5 @@
 import Carrito from './Carrito.js';
-import { muestraLoader, updateTablaTotal, updateTablaCantidad } from './utils.js';
+import { muestraLoader, updateTablaTotal, redondear, actualizarCantidad } from './utils.js';
 const URLAPI = './assets/api.json';
 
 let carrito;
@@ -7,7 +7,6 @@ const seccionCarrito = document.getElementById('carrito');
 const tablaProductos = document.getElementById('productos');
 const listaProductos = document.getElementById('lista-productos');
 const amountElement = document.getElementById('total');
-
 
 const initializeProductos = async () => {
     try {
@@ -22,11 +21,7 @@ const initializeProductos = async () => {
     }
 };
 
-
-
 document.addEventListener('DOMContentLoaded', async () => {
-
-
     muestraLoader(seccionCarrito, true);
 
     const datos = await initializeProductos();
@@ -53,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <button class="boton_modificar" id="subir-${producto.SKU}">+</button>
             </td>
             <td>${producto.price} ${carrito.currency}</td>
-            <td id="total-${producto.SKU}">${producto.price * producto.cantidad}</td>
+            <td id="total-${producto.SKU}">${redondear(producto.price * producto.cantidad, carrito)}</td>
         `;
 
         tablaProductos.querySelector('tbody').appendChild(row);
@@ -61,19 +56,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const botonMenos = row.querySelector(`#bajar-${producto.SKU}`);
         const botonMas = row.querySelector(`#subir-${producto.SKU}`);
 
-        botonMas.onclick = () => {
-            carrito.setCantidad(producto.SKU, producto.cantidad + 1);
-            const cantidadActualizada = carrito.productos.find((p) => p.SKU === producto.SKU).cantidad;
-            updateTablaCantidad(producto.SKU, cantidadActualizada, carrito);
-            updateTablaTotal(carrito, listaProductos, amountElement);
-        };
-
-        botonMenos.onclick = () => {
-            carrito.setCantidad(producto.SKU, producto.cantidad > 0 ? producto.cantidad - 1 : 0);
-            const cantidadActualizada = carrito.productos.find((p) => p.SKU === producto.SKU).cantidad;
-            updateTablaCantidad(producto.SKU, cantidadActualizada, carrito);
-            updateTablaTotal(carrito, listaProductos, amountElement);
-        };
+        botonMas.onclick = () => actualizarCantidad(carrito, listaProductos, producto, 1, amountElement);
+        botonMenos.onclick = () => actualizarCantidad(carrito, listaProductos, producto, -1, amountElement);
     });
 
     updateTablaTotal(carrito, listaProductos, amountElement);
