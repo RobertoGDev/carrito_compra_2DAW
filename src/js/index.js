@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         row.innerHTML = `
             <td>${producto.title}</td>
-            <td id="producto-${producto.SKU}">
+            <td class="cantidad_botones" id="producto-${producto.SKU}">
                 <button class="boton_modificar" id="bajar-${producto.SKU}">-</button>
                 <span>${producto.cantidad}</span>
                 <button class="boton_modificar" id="subir-${producto.SKU}">+</button>

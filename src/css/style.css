@@ -29,11 +29,18 @@ header, #contenido {
     display: none;
 }
 
+.cantidad_botones {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
 .boton_modificar {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 5px 10px;
+    padding: 5px 20px;
     cursor: pointer;
     border-radius: 3px;
 }
@@ -58,6 +65,13 @@ header, #contenido {
 
 #productos th {
     background-color: #f2f2f2;
+}
+
+/* Aplica la regla tanto al th como al td de la segunda columna */
+#productos th:nth-child(2), 
+#productos td:nth-child(2) {
+  max-width: 150px;
+  width: 150px; /* Forzar el ancho base ayuda a mantener la simetría */
 }
 
 #productos th:last-child {
